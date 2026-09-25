@@ -1,18 +1,6 @@
-# SQRlane build roadmap
-- [x] Shared app shell, API fallback, and design system
-- [x] Overview, Shipments, Desk, Risk feed
-- [x] Approvals, Agents, TMS link
-- [x] Loading, search, drawers, correction, local approvals
-- [x] Metadata and responsive preview verification
-- [x] Ask SQRlane home, automation-first navigation, Board moved to /overview
-- [x] Connect your TMS (export, API, write-back), saved connection, dynamic banner
-- [x] Approvals send one write-back at a time or export approved changes
-- [x] Home chat with attachments and browser-saved recent chats
-- [x] Connections page and moved MCP details
-- [x] Dashboard insights page with recorded fallback
-- [x] Selected-scenario Ask and null last-run fixes
-- [x] Desktop and mobile preview verification
-- [x] Unify charts, cards, headers, tables, chips, and spacing across every page
-- [x] Add monitored Map page with recorded fallback and Board preview
-- [x] Show answer wording provenance and exact wording on Home
-- [x] Verify desktop, mobile, refresh, navigation, and build health
+# Roadmap
+- [ ] Rebuild Dashboard as Today command centre
+- [ ] Turn Approvals into a filterable work queue
+- [ ] Persist browser-only approval history and restore approved state
+- [ ] Add honest connection verification and TMS tests
+- [ ] Verify desktop, mobile, and build health
