@@ -7,13 +7,14 @@ type RawRun = RecordedFixture["POST /run (after 'Inject Hamburg strike')"];
 export type RunData = Omit<RawRun, "ai"> & { ai?: RawRun["ai"] };
 type RawWorkflow = RecordedFixture["GET /api/workflow (the everyday desk)"];
 export type WorkflowMessage = RawWorkflow["messages_sample"][number];
-export type WorkflowOutput = RawWorkflow["outputs_sample"][number];
+export type WorkflowOutput = RawWorkflow["outputs_sample"][number] & { queued_at?: string | null };
 export type WorkflowData = Omit<RawWorkflow, "messages_sample" | "outputs_sample"> & { messages: WorkflowMessage[]; outputs: WorkflowOutput[] };
 export type InitialData = { shipments_count?: number; state?: string } | RunData;
 export type ScenarioId = RunData["scenarios"][number]["id"];
 export type WorkflowCorrection = { item: string; kind: "intent"; right: string; cue: string };
 export type CorrectionResult = { accepted: boolean; reason?: string | undefined; lesson: string; fixed_item: string; propagated: Array<{ item: string }>; run: unknown };
-export type InsightsData = typeof recordedInsights;
+export type WatchlistRow = { id: string; cargo: string; slack_days: number; worst_delay_days: number; margin_days: number; reason: string };
+export type InsightsData = Omit<typeof recordedInsights, "watchlist"> & { watchlist: { title: string; subtitle: string; rule: string; rows: WatchlistRow[] } };
 export type MapData = typeof recordedMap;
 export type AskAttachment = { name: string; content: string | null };
 
@@ -72,16 +73,21 @@ export type TmsApiConnection = { kind: "api"; name: string; source: string; url:
 export type TmsConnection = TmsFileConnection | TmsApiConnection;
 export type ConnectBody = ({ kind: "file"; filename: string; content: string } | { kind: "api"; url: string; token: string; auth_header: string; records_path?: string | undefined }) & { writeback_url?: string };
 export type ConnectResult = { ok: boolean; error?: string | undefined; kind: "file" | "api"; name: string; source: string; read_at: string; rows_read: number; bookings: unknown[]; not_covered: Array<{ row: number | string; ref?: string | null; reason: string }>; mapping: Array<{ column: string; field: string; used_for: string }>; unmapped_columns: string[]; warnings: string[]; writeback_url?: string | null };
-export type Writeback = RunData["tms"]["writebacks"][number];
+export type Writeback = RunData["tms"]["writebacks"][number] & { queued_at?: string | null; severity?: string | null };
 export type PushResult = { ok: true; status: number; host: string; response?: unknown } | { ok: false; error: string };
+export type TmsTestBody = { kind: "api" | "writeback"; url: string; token?: string; auth_header?: string; records_path?: string };
+export type TmsTestResult = { ok: boolean; host?: string; detail?: string; error?: string };
 
 export const askDesk = (question: string, scenario: string, connection: TmsConnection | null, attachments: AskAttachment[] = []) =>
   request<AskAnswer>("/api/ask", { method: "POST", body: JSON.stringify({ question, scenario, use_llm: true, connection, attachments }) });
-export const getInsights = (scenario: ScenarioId) => request<InsightsData>(`/api/insights?scenario=${encodeURIComponent(scenario)}`);
+export const getInsights = (scenario: ScenarioId, connection: TmsConnection | null) => connection
+  ? request<InsightsData>("/api/insights", { method: "POST", body: JSON.stringify({ scenario, connection }) })
+  : request<InsightsData>(`/api/insights?scenario=${encodeURIComponent(scenario)}`);
 export const getMap = (scenario: ScenarioId, connection: TmsConnection | null) => connection
   ? request<MapData>("/api/map", { method: "POST", body: JSON.stringify({ scenario, connection }) })
   : request<MapData>(`/api/map?scenario=${encodeURIComponent(scenario)}`);
 export const connectTms = (body: ConnectBody) => request<ConnectResult>("/api/tms/connect", { method: "POST", body: JSON.stringify(body) });
+export const testTms = (body: TmsTestBody) => request<TmsTestResult>("/api/tms/test", { method: "POST", body: JSON.stringify(body) });
 export async function getSampleCsv() { const r = await fetch(`${baseUrl}/api/tms/sample.csv`); if (!r.ok) throw new Error(String(r.status)); return r.text(); }
 export const pushWriteback = (body: { operation: Writeback; writeback_url: string; token?: string | undefined; auth_header?: string | undefined }) =>
   request<PushResult>("/api/tms/writeback", { method: "POST", body: JSON.stringify(body) });
