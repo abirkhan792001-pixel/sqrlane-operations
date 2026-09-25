@@ -1227,5 +1227,11 @@ export const recordedInsights = {
    }
   ]
  },
+ "watchlist": {
+  "title": "On watch",
+  "subtitle": "On plan, but close to the required-by date",
+  "rule": "On plan, and either a known delay would leave 2 days of slack or less, or the booking has 1 day of slack or less.",
+  "rows": []
+ },
  "note": "Counted from one run - the desk's synthetic inbox and the board as it stands. There is no history yet, so nothing here is a trend."
 };
