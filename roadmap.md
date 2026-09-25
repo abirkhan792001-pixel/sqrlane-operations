@@ -11,4 +11,4 @@
 - [x] Connections page and moved MCP details
 - [x] Dashboard insights page with recorded fallback
 - [x] Selected-scenario Ask and null last-run fixes
-- [ ] Desktop and mobile preview verification
+- [x] Desktop and mobile preview verification
