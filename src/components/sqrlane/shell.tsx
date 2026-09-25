@@ -19,6 +19,7 @@ export function AppShell({children}:{children:ReactNode}){
  useEffect(()=>{const fn=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();setPalette(true)}};addEventListener("keydown",fn);return()=>removeEventListener("keydown",fn)},[]);
  const bookings=useMemo(()=>run.shipments.map(s=>({to:"/shipments" as const,label:`${s.id} · ${s.cargo}`})),[run]);
  const searchResults=useMemo(()=>[...nav.flatMap(g=>g.items.map(i=>({to:i.to,label:i.label}))),...bookings].filter(x=>x.label.toLowerCase().includes(query.toLowerCase())),[bookings,query]);
+ const banner=honestyLine(run,connection);function askFromPalette(){const q=query.trim();if(!q)return;setPalette(false);setQuery("");void navigate({to:"/",search:{q}})}
  const title=pageCopy[path===`/`?"/ ":path]??["SQRlane","Freight operations"];
  return <div className="min-h-screen bg-background text-foreground"><div className="honesty" title={banner}><span>{banner}</span></div>
  <aside className={`sidebar ${mobile?"sidebar-open":""}`}><div className="flex h-16 items-center justify-between px-5"><Link to="/" className="flex items-center gap-2 text-lg font-semibold"><span className="size-3 bg-primary"/>SQRlane</Link><Button variant="ghost" className="size-8 p-0 lg:hidden" onClick={()=>setMobile(false)}><X className="size-4"/></Button></div>

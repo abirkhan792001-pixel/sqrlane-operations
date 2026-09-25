@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DeskPage } from "@/components/sqrlane/system-pages";
 export const Route = createFileRoute("/desk")({
- validateSearch: (s: Record<string, unknown>): { id?: string } => ({ id: typeof s.id === "string" && s.id ? s.id : undefined }),
+ validateSearch: (s: Record<string, unknown>): { id?: string | undefined } => ({ id: typeof s.id === "string" && s.id ? s.id : undefined }),
  head: () => ({ meta: [
   { title: "Desk — SQRlane" }, { name: "description", content: "The everyday freight inbox worked by the SQRlane agent team." },
   { property: "og:title", content: "Desk — SQRlane" }, { property: "og:description", content: "The everyday freight inbox worked by the SQRlane agent team." },
