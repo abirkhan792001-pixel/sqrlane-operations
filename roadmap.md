@@ -4,3 +4,8 @@
 - [x] Persist browser-only approval history and restore approved state
 - [x] Add honest connection verification and TMS tests
 - [x] Verify desktop, mobile, and build health
+- [x] Add Today first-run checklist with browser-only completion tracking
+- [x] Add mobile-native cards for Shipments, TMS tables, and Approvals
+- [x] Add per-booking shipment timeline
+- [x] Complete keyboard, focus, touch, keyboard viewport, map sheet, and contrast fixes
+- [x] Verify every page at desktop and 390px

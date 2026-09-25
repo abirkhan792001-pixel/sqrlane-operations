@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { RefreshCw } from "lucide-react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import { RefreshCw, X } from "lucide-react";
 import { recordedMap } from "@/data/map-fixture";
 import { WORLD_COAST_PATH } from "@/data/world-coast";
 import { getMap, type MapData, type ScenarioId } from "@/lib/api";
@@ -17,7 +17,8 @@ export function MapPage() {
   const [recorded, setRecorded] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [pulse, setPulse] = useState(0);
-  const [highlighted, setHighlighted] = useState<string | null>(null);
+  const search=useSearch({strict:false}) as {id?:string};
+  const [highlighted, setHighlighted] = useState<string | null>(search.id??null);
   const load = useCallback(async () => {
     setRefreshing(true);
     try { setData(await getMap(scenario, connection)); setRecorded(false); }
@@ -52,15 +53,15 @@ export function MapCanvas({ data, compact = false, highlighted, onHighlight }: {
   const [active, setActive] = useState<string | null>(null);
   const lanes = data.map.lanes;
   const laneById = useMemo(() => new Map(lanes.map(lane => [lane.id, lane])), [lanes]);
-  const selected = active ? laneById.get(active) : undefined;
+  const selected = active||highlighted ? laneById.get(active??highlighted??"") : undefined;
   return <div className="map-wrap">
     <svg viewBox={`0 0 ${data.map.frame.width} ${data.map.frame.height}`} role="img" aria-label={`Map of ${data.bookings} monitored bookings`} className="map-svg">
       <path d={WORLD_COAST_PATH} className="map-land"/>
       {lanes.map(lane => <polyline key={lane.id} points={lane.points.map(point => point.join(",")).join(" ")} className={`map-lane map-${laneTone(lane.state)} ${(highlighted === lane.id || active === lane.id) ? "map-highlight" : ""}`}/>) }
       {!compact && data.map.places.filter(place => place.on_board).map(place => <g key={place.id}><circle cx={place.x} cy={place.y} r="3" className="map-place"/><text x={place.lx} y={place.ly} className="map-label">{place.name}</text>{place.blocked && <circle cx={place.x} cy={place.y} r="9" className="map-blocked"><title>{place.blocked.title}</title></circle>}</g>)}
-      {lanes.map(lane => <g key={`marker-${lane.id}`} className="map-marker" role="link" tabIndex={0} aria-label={`Open ${lane.id}`} onMouseEnter={() => { setActive(lane.id); onHighlight?.(lane.id); }} onMouseLeave={() => { setActive(null); onHighlight?.(null); }} onFocus={() => { setActive(lane.id); onHighlight?.(lane.id); }} onBlur={() => { setActive(null); onHighlight?.(null); }} onClick={() => void navigate({ to: "/shipments", search: { id: lane.id } })} onKeyDown={event => { if (event.key === "Enter") void navigate({ to: "/shipments", search: { id: lane.id } }); }}><circle cx={lane.position.x} cy={lane.position.y} r={compact ? 6 : 7} className={`map-booking map-fill-${laneTone(lane.state)}`}/></g>)}
+      {lanes.map(lane => <g key={`marker-${lane.id}`} className="map-marker" role="link" tabIndex={0} aria-label={`Open ${lane.id}`} onMouseEnter={() => { setActive(lane.id); onHighlight?.(lane.id); }} onMouseLeave={() => { if(!matchMedia("(max-width: 639px)").matches){setActive(null);onHighlight?.(null)} }} onFocus={() => { setActive(lane.id); onHighlight?.(lane.id); }} onBlur={() => { if(!matchMedia("(max-width: 639px)").matches){setActive(null);onHighlight?.(null)} }} onClick={() => {if(matchMedia("(max-width: 639px)").matches){setActive(lane.id);onHighlight?.(lane.id)}else void navigate({ to: "/shipments", search: { id: lane.id } })}} onKeyDown={event => { if (event.key === "Enter"||event.key === " ") { event.preventDefault(); void navigate({ to: "/shipments", search: { id: lane.id } }); } }}><circle cx={lane.position.x} cy={lane.position.y} r={compact ? 6 : 7} className={`map-booking map-fill-${laneTone(lane.state)}`}/></g>)}
     </svg>
-    {!compact && selected && <div className="map-popover"><div className="flex items-center justify-between gap-3"><b className="font-mono text-xs">{selected.id}</b><Badge tone={toneFor(selected.state)}>{stateLabel(selected.state)}</Badge></div><p className="mt-2 text-sm font-medium">{selected.cargo}</p><p className="mt-1 text-xs">{selected.from} → {selected.to}</p><p className="mt-2 text-xs">ETA {selected.eta} · {selected.position.status} · {Math.round(selected.position.progress * 100)}% of the voyage</p><p className="mt-2 text-[10px] leading-4 text-muted-foreground">{selected.position.basis}</p></div>}
+    {!compact && selected && <div className="map-popover" role="dialog" aria-label={`${selected.id} map position`}><div className="flex items-center justify-between gap-3"><b className="font-mono text-xs">{selected.id}</b><div className="flex items-center gap-2"><Badge tone={toneFor(selected.state)}>{stateLabel(selected.state)}</Badge><button className="map-popover-close" aria-label="Close map details" onClick={()=>{setActive(null);onHighlight?.(null)}}><X className="size-4"/></button></div></div><p className="mt-2 text-sm font-medium">{selected.cargo}</p><p className="mt-1 text-xs">{selected.from} → {selected.to}</p><p className="mt-2 text-xs">ETA {selected.eta} · {selected.position.status} · {Math.round(selected.position.progress * 100)}% of the voyage</p><p className="mt-2 text-[10px] leading-4 text-muted-foreground">{selected.position.basis}</p><Button className="mt-3 w-full sm:hidden" onClick={()=>void navigate({to:"/shipments",search:{id:selected.id}})}>Open shipment</Button></div>}
   </div>;
 }
 
