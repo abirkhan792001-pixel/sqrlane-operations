@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { ArrowRight, Clock3, ExternalLink } from "lucide-react";
+import { Check, Circle, ExternalLink, X } from "lucide-react";
 import { recordedInsights } from "@/data/ask-fixtures";
 import { recordedMap } from "@/data/map-fixture";
 import { ageLabel, approvalRows, severityRank } from "@/lib/approval-data";
 import { getVerification } from "@/lib/connection-verification";
 import { getInsights, getMap, type InsightsData, type MapData, type ScenarioId } from "@/lib/api";
 import { sourceName, stateLabel, toneFor } from "@/lib/presentation";
+import { loadOnboarding, updateOnboarding, type OnboardingState } from "@/lib/onboarding";
+import { loadApprovalLog } from "@/lib/approval-log";
 import { Badge, Button, Card } from "@/components/ui";
 import { useApp } from "./app-context";
 import { MapCanvas } from "./map-page";
@@ -19,10 +21,14 @@ export function DashboardPage() {
   const [data, setData] = useState<InsightsData>(recordedInsights as InsightsData);
   const [map, setMap] = useState<MapData>(recordedMap);
   const [recorded, setRecorded] = useState(false);
+  const [onboarding, setOnboarding] = useState<OnboardingState>(() => loadOnboarding());
   const load = useCallback(async () => { try { setData(await getInsights(scenario, connection)); setRecorded(false); } catch { setData(recordedInsights as InsightsData); setRecorded(true); } }, [scenario, connection]);
   const loadMap = useCallback(async () => { try { setMap(await getMap(scenario, connection)); } catch { setMap(recordedMap); } }, [scenario, connection]);
   useEffect(() => { void load(); void loadMap(); }, [load, loadMap]);
   useEffect(() => { const timer = window.setInterval(() => void loadMap(), 60000); return () => window.clearInterval(timer); }, [loadMap]);
+  useEffect(() => { const refresh=()=>setOnboarding(loadOnboarding()); addEventListener("sqrlane-onboarding",refresh); return()=>removeEventListener("sqrlane-onboarding",refresh); }, []);
+  useEffect(() => { if(connection) updateOnboarding({connection:true}); }, [connection]);
+  useEffect(() => { const patch:Partial<OnboardingState>={scenario:true};if(run.ran_at)patch.run=true;if(loadApprovalLog().length)patch.change=true;updateOnboarding(patch); }, [run.ran_at]);
   const rows = useMemo(() => approvalRows(run, workflow), [run, workflow]);
   const waiting = rows.filter(row => !approved.has(row.key));
   const grouped = Object.values(waiting.reduce<Record<string, typeof waiting>>((all, row) => { (all[row.booking] ??= []).push(row); return all; }, {})).sort((a, b) => severityRank(b.reduce((m,r)=>severityRank(r.severity)>severityRank(m)?r.severity:m,"none")) - severityRank(a.reduce((m,r)=>severityRank(r.severity)>severityRank(m)?r.severity:m,"none")) || Math.min(...a.map(r=>r.queued_at?Date.parse(r.queued_at):Number.MAX_SAFE_INTEGER)) - Math.min(...b.map(r=>r.queued_at?Date.parse(r.queued_at):Number.MAX_SAFE_INTEGER))).slice(0,6);
@@ -30,8 +36,12 @@ export function DashboardPage() {
   const offPlan = run.summary.reroute + run.summary.hold;
   const tmsVerified = connection?.kind === "api" ? getVerification("api", connection.url) : undefined;
   const scenarioName = (run as unknown as { scenario?: { name?: string } | null }).scenario?.name ?? run.scenarios.find(s=>s.id===selectedScenario)?.name ?? "Calm board";
+  const checklist: Array<{key:keyof Omit<OnboardingState,"dismissed">;label:string;to:"/overview"|"/connections"|"/shipments"|"/approvals"}> = [
+    {key:"scenario",label:"Pick a scenario",to:"/overview"},{key:"connection",label:"Check the TMS connection",to:"/connections"},{key:"run",label:"Run the desk",to:"/overview"},{key:"decision",label:"Open one decision",to:"/shipments"},{key:"change",label:"Approve or export one change",to:"/approvals"},
+  ];
   return <div className="space-y-5">
     {recorded && <div className="flex justify-end"><Badge tone="amber">Recorded</Badge></div>}
+    {!onboarding.dismissed?<Card className="p-4"><div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3"><div className="min-w-0"><h2 className="text-sm font-semibold">Get started in five steps</h2><div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-5">{checklist.map(step=><Link key={step.key} to={step.to} className="flex min-h-10 items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium hover:bg-muted">{onboarding[step.key]?<Check className="size-4 shrink-0 text-state-green"/>:<Circle className="size-4 shrink-0 text-muted-foreground"/>}<span>{step.label}</span></Link>)}</div></div><Button variant="ghost" className="size-10 shrink-0 p-0" aria-label="Dismiss getting started" onClick={()=>updateOnboarding({dismissed:true})}><X className="size-4"/></Button></div></Card>:<div className="flex justify-end"><button className="min-h-10 text-xs font-medium text-muted-foreground underline decoration-dotted hover:text-foreground" onClick={()=>updateOnboarding({dismissed:false})}>Show getting started</button></div>}
     <Card className="grid gap-0 overflow-hidden sm:grid-cols-2 xl:grid-cols-4">
       <StateLink to="/overview" label="Scenario" value={scenarioName}/><StateLink to="/connections" label="TMS" value={!connection?"Demo":tmsVerified?`${run.tms.connector} · ${run.tms.status}`:`${run.tms.connector} · Configured — not verified`} dot={!connection||!!tmsVerified}/><StateLink to="/overview" label="Last run" value={run.ran_at?new Date(run.ran_at).toLocaleString([], {dateStyle:"medium",timeStyle:"short"}):"Not run yet"}/><StateLink to="/agents" label="Decision engine" value={run.ai?.model??"rules"}/>
     </Card>

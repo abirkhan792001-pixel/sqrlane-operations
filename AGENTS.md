@@ -9,3 +9,4 @@
 - Build each major dashboard view as its own TanStack route, because pages need stable URLs and unique metadata.
 - The saved TMS connection lives in app-context (localStorage `sqrlane.tms`) and is sent with Ask, Run, Initial and write-backs, because every view must describe the same book.
 - Keep Home chat history browser-only in localStorage `sqrlane.chats`, keyed by the `?chat=` URL, because chats must reopen without adding backend persistence.
+- Keep first-run progress browser-only in localStorage `sqrlane.onboarding`, because onboarding reflects this device’s local activity without introducing accounts or persistence.
