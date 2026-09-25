@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, Copy, Plug } from "lucide-react";
 import { Badge, Button, Card } from "@/components/ui";
@@ -19,5 +20,5 @@ export function ConnectionsPage() {
     <ConnectionCard title="AI model" status={engine?.model ? "Connected" : "Demo"} tone={engine?.model ? "green" : "blue"}><p className="font-mono">{engine?.model ?? "Rules only"}</p>{engine?.provider && <p className="text-muted-foreground">{engine.provider}</p>}</ConnectionCard>
   </div>;
 }
-function ConnectionCard({ title, status, tone, children }: { title: string; status: string; tone: "green"|"blue"|"neutral"; children: React.ReactNode }) { return <Card className="flex min-h-56 flex-col p-5"><div className="flex items-start justify-between gap-3"><span className="flex size-9 items-center justify-center rounded-lg bg-muted"><Plug className="size-4"/></span><Badge tone={tone}>{status}</Badge></div><h2 className="mt-5 text-sm font-semibold">{title}</h2><div className="mt-2 flex flex-1 flex-col gap-3 text-xs leading-5">{children}</div></Card> }
-function PageLink({to,children}:{to:"/"|"/tms";children:React.ReactNode}) { return <Link to={to} className="mt-auto inline-flex w-fit items-center text-sm font-medium hover:underline">{children} →</Link> }
+function ConnectionCard({ title, status, tone, children }: { title: string; status: string; tone: "green"|"blue"|"neutral"; children: ReactNode }) { return <Card className="flex min-h-56 flex-col p-5"><div className="flex items-start justify-between gap-3"><span className="flex size-9 items-center justify-center rounded-lg bg-muted"><Plug className="size-4"/></span><Badge tone={tone}>{status}</Badge></div><h2 className="mt-5 text-sm font-semibold">{title}</h2><div className="mt-2 flex flex-1 flex-col gap-3 text-xs leading-5">{children}</div></Card> }
+function PageLink({to,children}:{to:"/"|"/tms";children:ReactNode}) { return <Link to={to} className="mt-auto inline-flex w-fit items-center text-sm font-medium hover:underline">{children} →</Link> }
