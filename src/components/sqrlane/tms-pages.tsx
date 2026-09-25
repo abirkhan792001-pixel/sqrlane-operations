@@ -84,7 +84,7 @@ function ConnectPanel() {
   </Card>;
 }
 
-function ConnectPreview({ p, onUse, onCancel }: { p: { result: ConnectResult; recorded?: boolean }; onUse: () => void; onCancel: () => void }) {
+export function ConnectPreview({ p, onUse, onCancel, dismissLabel = "Cancel" }: { p: { result: ConnectResult; recorded?: boolean }; onUse: () => void; onCancel: () => void; dismissLabel?: string }) {
   const r = p.result;
   return <div className="mt-6 space-y-4 border-t border-border pt-5">
     <div className="flex flex-wrap items-center gap-2"><h3 className="min-w-0 break-words text-sm font-semibold">{r.name}</h3>{p.recorded && <Badge tone="amber">Recorded</Badge>}</div>
@@ -94,7 +94,7 @@ function ConnectPreview({ p, onUse, onCancel }: { p: { result: ConnectResult; re
     {r.not_covered?.length > 0 && <div><p className="stat-label mb-2">Not covered</p>{r.not_covered.map((n, i) => <p key={i} className="break-words text-xs"><span className="font-mono">Row {n.row}{n.ref ? ` · ${n.ref}` : ""}</span> — <span className="text-muted-foreground">{n.reason}</span></p>)}</div>}
     {r.unmapped_columns?.length > 0 && <div><p className="stat-label mb-2">Unmapped columns</p><div className="flex flex-wrap gap-1.5">{r.unmapped_columns.map(c => <Badge key={c}>{c}</Badge>)}</div></div>}
     {r.warnings?.length > 0 && <ul className="space-y-1">{r.warnings.map((w, i) => <li key={i} className="text-xs text-state-amber">{w}</li>)}</ul>}
-    <div className="flex flex-wrap gap-2"><Button disabled={!r.ok && !p.recorded} onClick={onUse}>Use this TMS</Button><Button variant="outline" onClick={onCancel}>Cancel</Button></div>
+    <div className="flex flex-wrap gap-2"><Button disabled={!r.ok && !p.recorded} onClick={onUse}>Use this TMS</Button><Button variant="outline" onClick={onCancel}>{dismissLabel}</Button></div>
   </div>;
 }
 
