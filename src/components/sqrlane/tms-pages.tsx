@@ -5,7 +5,7 @@ import { connectTms, getSampleCsv, hostOf, pushWriteback, type ConnectBody, type
 import { bookingForOutput } from "@/lib/presentation";
 import { Badge, Button, Card } from "@/components/ui";
 import { useApp } from "./app-context";
-import { SectionHead } from "./operations-pages";
+import { SectionHead, StatCard } from "./operations-pages";
 import { Metric } from "./system-pages";
 
 /* ------------------------------ TMS link ------------------------------ */
@@ -13,8 +13,8 @@ export function TmsPage() {
   const { run, connection } = useApp();
   const entries = Object.entries(run.tms.queued_by_agent); const max = Math.max(...entries.map(([, v]) => v), 1);
   return <div className="space-y-5">
-    <Card className="p-5"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="stat-label">Connector</p><h2 className="mt-2 break-words text-lg font-semibold">{run.tms.connector} · {run.tms.status}</h2><p className="mt-1 text-xs text-muted-foreground">{run.tms.honesty}</p></div><Badge tone={connection ? "green" : "blue"}>{connection ? "CONNECTED" : "DEMO"}</Badge></div>
-      <div className="mt-6 grid gap-4 sm:grid-cols-3"><Metric label="Bookings read" value={run.tms.bookings_read} /><Metric label="Changes queued" value={run.tms.queued} /><Metric label="Bookings affected" value={run.tms.bookings_affected} /></div></Card>
+    <Card className="p-5"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><SectionHead title={run.tms.connector} caption={run.tms.honesty}/><p className="text-xs text-muted-foreground">{run.tms.status}</p></div><Badge tone={connection ? "green" : "blue"}>{connection ? "CONNECTED" : "DEMO"}</Badge></div></Card>
+    <div className="grid gap-4 sm:grid-cols-3"><StatCard label="Bookings read" value={run.tms.bookings_read} caption="Bookings available to the desk"/><StatCard label="Changes queued" value={run.tms.queued} caption="Queued — not written" tone="blue"/><StatCard label="Bookings affected" value={run.tms.bookings_affected} caption="Bookings with queued changes" tone="amber"/></div>
     <ConnectPanel />
     <div className="grid gap-5 xl:grid-cols-[.6fr_1.4fr]"><Card className="p-5"><SectionHead title="Queued by agent" />{entries.map(([agent, value]) => <div key={agent} className="mb-4"><div className="mb-1 flex justify-between text-xs"><span>{agent}</span><span className="font-mono">{value}</span></div><div className="h-1.5 rounded-full bg-muted"><div className="h-full rounded-full bg-state-blue" style={{ width: `${value / max * 100}%` }} /></div></div>)}</Card>
       <Card className="min-w-0 overflow-hidden"><div className="p-5"><SectionHead title="Write-back queue" /></div><div className="table-wrap"><table><thead><tr><th>Booking</th><th>Agent</th><th>Operation</th><th>Change</th><th>Status</th></tr></thead><tbody>{run.tms.writebacks.map((w, i) => <tr key={`${w.booking_ref}-${i}`}><td className="font-mono">{w.booking_ref}</td><td>{w.agent}</td><td>{w.operation}</td><td>{w.changes.map(c => `${c.field}: ${"from" in c ? c.from : "—"} → ${c.to}`).join(" · ")}</td><td><Badge tone="blue">Queued — not written</Badge></td></tr>)}</tbody></table></div></Card></div>
