@@ -10,33 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgentsRouteImport } from './routes/agents'
+import { Route as ApprovalsRouteImport } from './routes/approvals'
+import { Route as DeskRouteImport } from './routes/desk'
+import { Route as RiskRouteImport } from './routes/risk'
+import { Route as ShipmentsRouteImport } from './routes/shipments'
+import { Route as TmsRouteImport } from './routes/tms'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgentsRoute = AgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApprovalsRoute = ApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeskRoute = DeskRouteImport.update({
+  id: '/desk',
+  path: '/desk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RiskRoute = RiskRouteImport.update({
+  id: '/risk',
+  path: '/risk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShipmentsRoute = ShipmentsRouteImport.update({
+  id: '/shipments',
+  path: '/shipments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TmsRoute = TmsRouteImport.update({
+  id: '/tms',
+  path: '/tms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agents': typeof AgentsRoute
+  '/approvals': typeof ApprovalsRoute
+  '/desk': typeof DeskRoute
+  '/risk': typeof RiskRoute
+  '/shipments': typeof ShipmentsRoute
+  '/tms': typeof TmsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agents': typeof AgentsRoute
+  '/approvals': typeof ApprovalsRoute
+  '/desk': typeof DeskRoute
+  '/risk': typeof RiskRoute
+  '/shipments': typeof ShipmentsRoute
+  '/tms': typeof TmsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agents': typeof AgentsRoute
+  '/approvals': typeof ApprovalsRoute
+  '/desk': typeof DeskRoute
+  '/risk': typeof RiskRoute
+  '/shipments': typeof ShipmentsRoute
+  '/tms': typeof TmsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/agents' | '/approvals' | '/desk' | '/risk' | '/shipments' | '/tms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/agents' | '/approvals' | '/desk' | '/risk' | '/shipments' | '/tms'
+  id:
+    | '__root__'
+    | '/'
+    | '/agents'
+    | '/approvals'
+    | '/desk'
+    | '/risk'
+    | '/shipments'
+    | '/tms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgentsRoute: typeof AgentsRoute
+  ApprovalsRoute: typeof ApprovalsRoute
+  DeskRoute: typeof DeskRoute
+  RiskRoute: typeof RiskRoute
+  ShipmentsRoute: typeof ShipmentsRoute
+  TmsRoute: typeof TmsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +117,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agents': {
+      id: '/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AgentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/approvals': {
+      id: '/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof ApprovalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/desk': {
+      id: '/desk'
+      path: '/desk'
+      fullPath: '/desk'
+      preLoaderRoute: typeof DeskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/risk': {
+      id: '/risk'
+      path: '/risk'
+      fullPath: '/risk'
+      preLoaderRoute: typeof RiskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipments': {
+      id: '/shipments'
+      path: '/shipments'
+      fullPath: '/shipments'
+      preLoaderRoute: typeof ShipmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tms': {
+      id: '/tms'
+      path: '/tms'
+      fullPath: '/tms'
+      preLoaderRoute: typeof TmsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgentsRoute: AgentsRoute,
+  ApprovalsRoute: ApprovalsRoute,
+  DeskRoute: DeskRoute,
+  RiskRoute: RiskRoute,
+  ShipmentsRoute: ShipmentsRoute,
+  TmsRoute: TmsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
