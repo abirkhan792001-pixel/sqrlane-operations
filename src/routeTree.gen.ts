@@ -15,6 +15,7 @@ import { Route as ApprovalsRouteImport } from './routes/approvals'
 import { Route as ConnectionsRouteImport } from './routes/connections'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DeskRouteImport } from './routes/desk'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as RiskRouteImport } from './routes/risk'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
@@ -50,6 +51,11 @@ const DeskRoute = DeskRouteImport.update({
   path: '/desk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OverviewRoute = OverviewRouteImport.update({
   id: '/overview',
   path: '/overview',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
   '/desk': typeof DeskRoute
+  '/map': typeof MapRoute
   '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
   '/shipments': typeof ShipmentsRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
   '/desk': typeof DeskRoute
+  '/map': typeof MapRoute
   '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
   '/shipments': typeof ShipmentsRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
   '/desk': typeof DeskRoute
+  '/map': typeof MapRoute
   '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
   '/shipments': typeof ShipmentsRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/connections'
     | '/dashboard'
     | '/desk'
+    | '/map'
     | '/overview'
     | '/risk'
     | '/shipments'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/connections'
     | '/dashboard'
     | '/desk'
+    | '/map'
     | '/overview'
     | '/risk'
     | '/shipments'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/connections'
     | '/dashboard'
     | '/desk'
+    | '/map'
     | '/overview'
     | '/risk'
     | '/shipments'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   ConnectionsRoute: typeof ConnectionsRoute
   DashboardRoute: typeof DashboardRoute
   DeskRoute: typeof DeskRoute
+  MapRoute: typeof MapRoute
   OverviewRoute: typeof OverviewRoute
   RiskRoute: typeof RiskRoute
   ShipmentsRoute: typeof ShipmentsRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeskRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/overview': {
       id: '/overview'
       path: '/overview'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConnectionsRoute: ConnectionsRoute,
   DashboardRoute: DashboardRoute,
   DeskRoute: DeskRoute,
+  MapRoute: MapRoute,
   OverviewRoute: OverviewRoute,
   RiskRoute: RiskRoute,
   ShipmentsRoute: ShipmentsRoute,
