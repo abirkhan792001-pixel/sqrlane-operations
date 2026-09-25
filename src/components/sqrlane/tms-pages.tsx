@@ -5,8 +5,8 @@ import { recordedSampleConnection } from "@/data/ask-fixtures";
 import { connectTms, getSampleCsv, hostOf, pushWriteback, testTms, type ConnectBody, type ConnectResult, type PushResult, type TmsConnection, type TmsTestBody, type TmsTestResult } from "@/lib/api";
 import { toneFor } from "@/lib/presentation";
 import { ageLabel, ageMs, approvalRows, rowSummary, severityRank, type ApprovalRow } from "@/lib/approval-data";
-import { loadApprovalLog, loadApprover, saveApproval, saveApprover, updateApproval, type ApprovalLogEntry } from "@/lib/approval-log";
-import { getVerification, saveVerification } from "@/lib/connection-verification";
+import { loadApprovalLog, loadApprover, saveApproval, saveApprover, type ApprovalLogEntry } from "@/lib/approval-log";
+import { saveVerification } from "@/lib/connection-verification";
 import { Badge, Button, Card } from "@/components/ui";
 import { useApp } from "./app-context";
 import { SectionHead, StatCard } from "./operations-pages";
@@ -71,7 +71,7 @@ function ConnectPanel() {
       <div className="grid gap-x-4 sm:grid-cols-2"><label className="form-label">Token<input type="password" autoComplete="off" value={api.token} onChange={e => setApi({ ...api, token: e.target.value })} className="form-control" /></label>
         <label className="form-label">Auth header<input value={api.auth_header} onChange={e => setApi({ ...api, auth_header: e.target.value })} className="form-control" /></label></div>
       <label className="form-label">Records path (optional)<input value={api.records_path} onChange={e => setApi({ ...api, records_path: e.target.value })} className="form-control" placeholder="data.bookings" /></label>
-      <Button type="submit" disabled={busy || !/^https:\/\//i.test(api.url.trim())}>Check this endpoint</Button>
+      <div className="flex flex-wrap items-center gap-3"><Button type="submit" disabled={busy || !/^https:\/\//i.test(api.url.trim())}>Check this endpoint</Button><ConnectionTest body={{kind:"api",url:api.url.trim(),token:api.token,auth_header:api.auth_header||"Authorization",records_path:api.records_path.trim()||undefined}} /></div>
     </form>}
     {tab === "writeback" && <div>
       <p className="mb-4 text-xs text-muted-foreground">Each change you approve is sent there, one at a time. Leave empty to export approved changes and import them yourself.</p>
@@ -79,7 +79,7 @@ function ConnectPanel() {
       {!wbValid && <p className="-mt-2 mb-3 text-xs text-state-red">The write-back URL must start with https://</p>}
       <div className="grid gap-x-4 sm:grid-cols-2"><label className="form-label">Token<input type="password" autoComplete="off" value={wb.token} onChange={e => setWb({ ...wb, token: e.target.value })} className="form-control" /></label>
         <label className="form-label">Auth header<input value={wb.auth_header} onChange={e => setWb({ ...wb, auth_header: e.target.value })} className="form-control" /></label></div>
-      <p className="text-xs text-muted-foreground">Set this before you upload an export or check an endpoint; it is saved with the connection.</p>
+      <p className="mb-3 text-xs text-muted-foreground">Set this before you upload an export or check an endpoint; it is saved with the connection.</p><ConnectionTest body={{kind:"writeback",url:wb.writeback_url.trim(),token:wb.token,auth_header:wb.auth_header||"Authorization"}} />
     </div>}
 
     {busy && <p className="mt-4 text-xs text-muted-foreground">Reading your TMS…</p>}
