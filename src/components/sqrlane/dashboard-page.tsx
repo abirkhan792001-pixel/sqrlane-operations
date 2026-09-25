@@ -25,7 +25,7 @@ export function DashboardPage() {
   useEffect(() => { const timer = window.setInterval(() => void loadMap(), 60000); return () => window.clearInterval(timer); }, [loadMap]);
   const rows = useMemo(() => approvalRows(run, workflow), [run, workflow]);
   const waiting = rows.filter(row => !approved.has(row.key));
-  const grouped = Object.values(waiting.reduce<Record<string, typeof waiting>>((all, row) => { (all[row.booking] ??= []).push(row); return all; }, {})).sort((a, b) => severityRank(b.reduce((m,r)=>severityRank(r.severity)>severityRank(m)?r.severity:m,"none")) - severityRank(a.reduce((m,r)=>severityRank(r.severity)>severityRank(m)?r.severity:m,"none")) || Math.max(...b.map(r=>r.queued_at?Date.parse(r.queued_at):0)) - Math.max(...a.map(r=>r.queued_at?Date.parse(r.queued_at):0))).slice(0,6);
+  const grouped = Object.values(waiting.reduce<Record<string, typeof waiting>>((all, row) => { (all[row.booking] ??= []).push(row); return all; }, {})).sort((a, b) => severityRank(b.reduce((m,r)=>severityRank(r.severity)>severityRank(m)?r.severity:m,"none")) - severityRank(a.reduce((m,r)=>severityRank(r.severity)>severityRank(m)?r.severity:m,"none")) || Math.min(...a.map(r=>r.queued_at?Date.parse(r.queued_at):Number.MAX_SAFE_INTEGER)) - Math.min(...b.map(r=>r.queued_at?Date.parse(r.queued_at):Number.MAX_SAFE_INTEGER))).slice(0,6);
   const watch = data.watchlist ?? { title: "On watch", subtitle: "", rule: "", rows: [] };
   const offPlan = run.summary.reroute + run.summary.hold;
   const tmsVerified = connection?.kind === "api" ? getVerification("api", connection.url) : undefined;
