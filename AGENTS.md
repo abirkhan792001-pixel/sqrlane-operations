@@ -1,10 +1,8 @@
 <!-- LOVABLE:BEGIN -->
 > [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
+> This project is connected to Lovable. Avoid rewriting published git history.
 <!-- LOVABLE:END -->
+
+- Keep SQRlane frontend-only; all operational data comes through `src/lib/api.ts` with the recorded fixture fallback, because the production host proxies the existing API.
+- Keep shared navigation, scenario state, fallback status, and local approvals in one client context, because all seven pages must stay synchronized without persistence.
+- Build each major dashboard view as its own TanStack route, because pages need stable URLs and unique metadata.
