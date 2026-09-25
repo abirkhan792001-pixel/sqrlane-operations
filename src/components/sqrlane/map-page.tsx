@@ -7,7 +7,6 @@ import { getMap, type MapData, type ScenarioId } from "@/lib/api";
 import { stateLabel, toneFor } from "@/lib/presentation";
 import { Badge, Button, Card } from "@/components/ui";
 import { useApp } from "./app-context";
-import { SectionHead } from "./operations-pages";
 
 type Lane = MapData["map"]["lanes"][number];
 
@@ -34,8 +33,8 @@ export function MapPage() {
       <Button variant="outline" disabled={refreshing} onClick={() => void load()}><RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`}/>Refresh</Button>
     </div>
     <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
-      <Card className="min-w-0 p-5"><SectionHead title="Booking map" caption={`${data.mapped} of ${data.bookings} bookings mapped from the TMS link`}/><MapCanvas data={data} highlighted={highlighted} onHighlight={setHighlighted}/></Card>
-      <Card className="overflow-hidden"><div className="p-5"><SectionHead title="Shipments" caption="Hover to trace a lane"/></div><div className="divide-y divide-border">{data.shipments.map(shipment => <ShipmentRow key={shipment.id} shipment={shipment} onHighlight={setHighlighted}/>)}</div></Card>
+      <Card className="min-w-0 p-5"><MapSectionHead title="Booking map" caption={`${data.mapped} of ${data.bookings} bookings mapped from the TMS link`}/><MapCanvas data={data} highlighted={highlighted} onHighlight={setHighlighted}/></Card>
+      <Card className="overflow-hidden"><div className="p-5"><MapSectionHead title="Shipments" caption="Hover to trace a lane"/></div><div className="divide-y divide-border">{data.shipments.map(shipment => <ShipmentRow key={shipment.id} shipment={shipment} onHighlight={setHighlighted}/>)}</div></Card>
     </div>
     <p className="text-xs text-muted-foreground">{data.note}</p>
   </div>;
@@ -73,5 +72,7 @@ export function BoardMap() {
   const scenario = (run as unknown as { scenario?: { id?: ScenarioId } | null }).scenario?.id ?? selectedScenario;
   const [data, setData] = useState<MapData>(recordedMap);
   useEffect(() => { let live = true; getMap(scenario, connection).then(value => { if (live) setData(value); }).catch(() => { if (live) setData(recordedMap); }); return () => { live = false; }; }, [scenario, connection]);
-  return <Card className="p-5"><div className="flex items-start justify-between gap-3"><SectionHead title="Bookings in motion" caption={`${data.mapped} of ${data.bookings} bookings mapped`}/><Button variant="outline" onClick={() => void navigate({ to: "/map" })}>Open map</Button></div><MapCanvas data={data} compact/></Card>;
+  return <Card className="p-5"><div className="flex items-start justify-between gap-3"><MapSectionHead title="Bookings in motion" caption={`${data.mapped} of ${data.bookings} bookings mapped`}/><Button variant="outline" onClick={() => void navigate({ to: "/map" })}>Open map</Button></div><MapCanvas data={data} compact/></Card>;
 }
+
+function MapSectionHead({ title, caption }: { title: string; caption?: string }) { return <div className="mb-4"><h2 className="text-sm font-semibold">{title}</h2>{caption && <p className="mt-1 text-xs text-muted-foreground">{caption}</p>}</div>; }
