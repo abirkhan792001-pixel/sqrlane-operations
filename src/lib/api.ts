@@ -4,7 +4,7 @@ import { recordedMap } from "@/data/map-fixture";
 
 export type RecordedFixture = typeof recordedRun;
 type RawRun = RecordedFixture["POST /run (after 'Inject Hamburg strike')"];
-export type RunData = Omit<RawRun, "ai"> & { ai?: RawRun["ai"] };
+export type RunData = Omit<RawRun, "ai" | "tms"> & { ai?: RawRun["ai"]; tms: Omit<RawRun["tms"], "writebacks"> & { writebacks: Writeback[] } };
 type RawWorkflow = RecordedFixture["GET /api/workflow (the everyday desk)"];
 export type WorkflowMessage = RawWorkflow["messages_sample"][number];
 export type WorkflowOutput = RawWorkflow["outputs_sample"][number] & { queued_at?: string | null };
@@ -73,9 +73,9 @@ export type TmsApiConnection = { kind: "api"; name: string; source: string; url:
 export type TmsConnection = TmsFileConnection | TmsApiConnection;
 export type ConnectBody = ({ kind: "file"; filename: string; content: string } | { kind: "api"; url: string; token: string; auth_header: string; records_path?: string | undefined }) & { writeback_url?: string };
 export type ConnectResult = { ok: boolean; error?: string | undefined; kind: "file" | "api"; name: string; source: string; read_at: string; rows_read: number; bookings: unknown[]; not_covered: Array<{ row: number | string; ref?: string | null; reason: string }>; mapping: Array<{ column: string; field: string; used_for: string }>; unmapped_columns: string[]; warnings: string[]; writeback_url?: string | null };
-export type Writeback = RunData["tms"]["writebacks"][number] & { queued_at?: string | null; severity?: string | null };
+export type Writeback = RawRun["tms"]["writebacks"][number] & { queued_at?: string | null; severity?: string | null };
 export type PushResult = { ok: true; status: number; host: string; response?: unknown } | { ok: false; error: string };
-export type TmsTestBody = { kind: "api" | "writeback"; url: string; token?: string; auth_header?: string; records_path?: string };
+export type TmsTestBody = { kind: "api" | "writeback"; url: string; token?: string | undefined; auth_header?: string | undefined; records_path?: string | undefined };
 export type TmsTestResult = { ok: boolean; host?: string; detail?: string; error?: string };
 
 export const askDesk = (question: string, scenario: string, connection: TmsConnection | null, attachments: AskAttachment[] = []) =>

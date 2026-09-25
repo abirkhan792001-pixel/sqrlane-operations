@@ -1,5 +1,5 @@
 import type { TmsTestResult } from "./api";
-export type Verification = { key: string; kind: "api" | "writeback"; verified_at: string; host: string; detail?: string };
+export type Verification = { key: string; kind: "api" | "writeback"; verified_at: string; host: string; detail?: string | undefined };
 const KEY = "sqrlane.tms.verifications";
 export function connectionKey(kind: Verification["kind"], url: string) { return `${kind}|${url}`; }
 export function loadVerifications(): Verification[] { try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : []; } catch { return []; } }
