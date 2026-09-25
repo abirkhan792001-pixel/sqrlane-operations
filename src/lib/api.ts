@@ -1,5 +1,5 @@
 import { recordedRun } from "@/data/fixtures";
-import type { recordedAnswers } from "@/data/ask-fixtures";
+import { recordedInsights, type recordedAnswers } from "@/data/ask-fixtures";
 
 export type RecordedFixture = typeof recordedRun;
 type RawRun = RecordedFixture["POST /run (after 'Inject Hamburg strike')"];
@@ -12,6 +12,8 @@ export type InitialData = { shipments_count?: number; state?: string } | RunData
 export type ScenarioId = RunData["scenarios"][number]["id"];
 export type WorkflowCorrection = { item: string; kind: "intent"; right: string; cue: string };
 export type CorrectionResult = { accepted: boolean; reason?: string | undefined; lesson: string; fixed_item: string; propagated: Array<{ item: string }>; run: unknown };
+export type InsightsData = typeof recordedInsights;
+export type AskAttachment = { name: string; content: string | null };
 
 export const recordedRunData = normalizeRun(recordedRun["POST /run (after 'Inject Hamburg strike')"]);
 const calmDecision = { decision: "no-action", headline: "On plan", reasoning: "", delay_days: 0, triggering_events: [], decided_by: "", revised_eta: null, recommended_route: null, recommended_discharge_port: null };
@@ -57,6 +59,8 @@ export type AskAnswer = Omit<RecordedAnswer, "conversation" | "facts" | "links" 
   conversation: AskMessage[]; facts: Array<{ label: string; value: string | number }>;
   links: Array<{ label: string; view: string; id?: string | null }>; suggestions: string[];
   checked_against?: { note?: string | null } & Record<string, unknown>; examples?: string[];
+  connection_preview?: ConnectResult | null;
+  desk_item?: { id?: string; outputs?: Array<{ worker?: string; subject?: string; action?: string; status?: string }> } | null;
 };
 export type TmsFileConnection = { kind: "file"; name: string; source: string; read_at: string; bookings: unknown[]; writeback_url?: string | null; token?: string | undefined; auth_header?: string | undefined };
 export type TmsApiConnection = { kind: "api"; name: string; source: string; url: string; token: string; auth_header: string; records_path?: string | undefined; writeback_url?: string | null };
@@ -66,8 +70,9 @@ export type ConnectResult = { ok: boolean; error?: string | undefined; kind: "fi
 export type Writeback = RunData["tms"]["writebacks"][number];
 export type PushResult = { ok: true; status: number; host: string; response?: unknown } | { ok: false; error: string };
 
-export const askDesk = (question: string, scenario: string | null, connection: TmsConnection | null) =>
-  request<AskAnswer>("/api/ask", { method: "POST", body: JSON.stringify({ question, scenario, use_llm: true, connection }) });
+export const askDesk = (question: string, scenario: string, connection: TmsConnection | null, attachments: AskAttachment[] = []) =>
+  request<AskAnswer>("/api/ask", { method: "POST", body: JSON.stringify({ question, scenario, use_llm: true, connection, attachments }) });
+export const getInsights = (scenario: ScenarioId) => request<InsightsData>(`/api/insights?scenario=${encodeURIComponent(scenario)}`);
 export const connectTms = (body: ConnectBody) => request<ConnectResult>("/api/tms/connect", { method: "POST", body: JSON.stringify(body) });
 export async function getSampleCsv() { const r = await fetch(`${baseUrl}/api/tms/sample.csv`); if (!r.ok) throw new Error(String(r.status)); return r.text(); }
 export const pushWriteback = (body: { operation: Writeback; writeback_url: string; token?: string | undefined; auth_header?: string | undefined }) =>

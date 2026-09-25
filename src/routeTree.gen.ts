@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as ApprovalsRouteImport } from './routes/approvals'
+import { Route as ConnectionsRouteImport } from './routes/connections'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DeskRouteImport } from './routes/desk'
 import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as RiskRouteImport } from './routes/risk'
@@ -31,6 +33,16 @@ const AgentsRoute = AgentsRouteImport.update({
 const ApprovalsRoute = ApprovalsRouteImport.update({
   id: '/approvals',
   path: '/approvals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnectionsRoute = ConnectionsRouteImport.update({
+  id: '/connections',
+  path: '/connections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeskRoute = DeskRouteImport.update({
@@ -63,6 +75,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/agents': typeof AgentsRoute
   '/approvals': typeof ApprovalsRoute
+  '/connections': typeof ConnectionsRoute
+  '/dashboard': typeof DashboardRoute
   '/desk': typeof DeskRoute
   '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
@@ -73,6 +87,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agents': typeof AgentsRoute
   '/approvals': typeof ApprovalsRoute
+  '/connections': typeof ConnectionsRoute
+  '/dashboard': typeof DashboardRoute
   '/desk': typeof DeskRoute
   '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
@@ -84,6 +100,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/agents': typeof AgentsRoute
   '/approvals': typeof ApprovalsRoute
+  '/connections': typeof ConnectionsRoute
+  '/dashboard': typeof DashboardRoute
   '/desk': typeof DeskRoute
   '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
@@ -96,6 +114,8 @@ export interface FileRouteTypes {
     | '/'
     | '/agents'
     | '/approvals'
+    | '/connections'
+    | '/dashboard'
     | '/desk'
     | '/overview'
     | '/risk'
@@ -106,6 +126,8 @@ export interface FileRouteTypes {
     | '/'
     | '/agents'
     | '/approvals'
+    | '/connections'
+    | '/dashboard'
     | '/desk'
     | '/overview'
     | '/risk'
@@ -116,6 +138,8 @@ export interface FileRouteTypes {
     | '/'
     | '/agents'
     | '/approvals'
+    | '/connections'
+    | '/dashboard'
     | '/desk'
     | '/overview'
     | '/risk'
@@ -127,6 +151,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AgentsRoute: typeof AgentsRoute
   ApprovalsRoute: typeof ApprovalsRoute
+  ConnectionsRoute: typeof ConnectionsRoute
+  DashboardRoute: typeof DashboardRoute
   DeskRoute: typeof DeskRoute
   OverviewRoute: typeof OverviewRoute
   RiskRoute: typeof RiskRoute
@@ -155,6 +181,20 @@ declare module '@tanstack/react-router' {
       path: '/approvals'
       fullPath: '/approvals'
       preLoaderRoute: typeof ApprovalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connections': {
+      id: '/connections'
+      path: '/connections'
+      fullPath: '/connections'
+      preLoaderRoute: typeof ConnectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/desk': {
@@ -199,6 +239,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AgentsRoute: AgentsRoute,
   ApprovalsRoute: ApprovalsRoute,
+  ConnectionsRoute: ConnectionsRoute,
+  DashboardRoute: DashboardRoute,
   DeskRoute: DeskRoute,
   OverviewRoute: OverviewRoute,
   RiskRoute: RiskRoute,
