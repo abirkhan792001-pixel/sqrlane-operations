@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as ApprovalsRouteImport } from './routes/approvals'
 import { Route as DeskRouteImport } from './routes/desk'
+import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as RiskRouteImport } from './routes/risk'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as TmsRouteImport } from './routes/tms'
@@ -37,6 +38,11 @@ const DeskRoute = DeskRouteImport.update({
   path: '/desk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OverviewRoute = OverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RiskRoute = RiskRouteImport.update({
   id: '/risk',
   path: '/risk',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/agents': typeof AgentsRoute
   '/approvals': typeof ApprovalsRoute
   '/desk': typeof DeskRoute
+  '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
   '/shipments': typeof ShipmentsRoute
   '/tms': typeof TmsRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/agents': typeof AgentsRoute
   '/approvals': typeof ApprovalsRoute
   '/desk': typeof DeskRoute
+  '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
   '/shipments': typeof ShipmentsRoute
   '/tms': typeof TmsRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/agents': typeof AgentsRoute
   '/approvals': typeof ApprovalsRoute
   '/desk': typeof DeskRoute
+  '/overview': typeof OverviewRoute
   '/risk': typeof RiskRoute
   '/shipments': typeof ShipmentsRoute
   '/tms': typeof TmsRoute
@@ -84,15 +93,31 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/agents' | '/approvals' | '/desk' | '/risk' | '/shipments' | '/tms'
+    | '/'
+    | '/agents'
+    | '/approvals'
+    | '/desk'
+    | '/overview'
+    | '/risk'
+    | '/shipments'
+    | '/tms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/agents' | '/approvals' | '/desk' | '/risk' | '/shipments' | '/tms'
+  to:
+    | '/'
+    | '/agents'
+    | '/approvals'
+    | '/desk'
+    | '/overview'
+    | '/risk'
+    | '/shipments'
+    | '/tms'
   id:
     | '__root__'
     | '/'
     | '/agents'
     | '/approvals'
     | '/desk'
+    | '/overview'
     | '/risk'
     | '/shipments'
     | '/tms'
@@ -103,6 +128,7 @@ export interface RootRouteChildren {
   AgentsRoute: typeof AgentsRoute
   ApprovalsRoute: typeof ApprovalsRoute
   DeskRoute: typeof DeskRoute
+  OverviewRoute: typeof OverviewRoute
   RiskRoute: typeof RiskRoute
   ShipmentsRoute: typeof ShipmentsRoute
   TmsRoute: typeof TmsRoute
@@ -138,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeskRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/overview': {
+      id: '/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof OverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/risk': {
       id: '/risk'
       path: '/risk'
@@ -167,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AgentsRoute: AgentsRoute,
   ApprovalsRoute: ApprovalsRoute,
   DeskRoute: DeskRoute,
+  OverviewRoute: OverviewRoute,
   RiskRoute: RiskRoute,
   ShipmentsRoute: ShipmentsRoute,
   TmsRoute: TmsRoute,
