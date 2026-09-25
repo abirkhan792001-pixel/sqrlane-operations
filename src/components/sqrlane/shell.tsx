@@ -8,12 +8,12 @@ import { Badge, Button } from "@/components/ui";
 import { useApp } from "./app-context";
 
 const nav=[
- {group:"",items:[{to:"/",label:"Home",icon:House},{to:"/dashboard",label:"Dashboard",icon:LayoutDashboard}]},
+ {group:"",items:[{to:"/",label:"Home",icon:House},{to:"/dashboard",label:"Today",icon:LayoutDashboard}]},
  {group:"Automation",items:[{to:"/desk",label:"Desk",icon:Activity},{to:"/approvals",label:"Approvals",icon:Bell},{to:"/tms",label:"TMS link",icon:Link2}]},
  {group:"Risk",items:[{to:"/map",label:"Map",icon:Map},{to:"/overview",label:"Board",icon:CircleGauge},{to:"/shipments",label:"Shipments",icon:Ship},{to:"/risk",label:"Risk feed",icon:ShieldAlert}]},
  {group:"System",items:[{to:"/connections",label:"Connections",icon:Plug},{to:"/agents",label:"Agents",icon:Bot}]},
 ] as const;
-const pageCopy:Record<string,[string,string]>={"/ ":["Home","Ask the desk — every answer is checked against the board"],"/dashboard":["Dashboard","Operational insights counted from the current run"],"/connections":["Connections","Every source and destination connected to the desk"],"/map":["Map","Every booking monitored through the TMS link"],"/overview":["Board","Decisions across the active freight board"],"/shipments":["Shipments","Every booking, decision and approval gate"],"/desk":["Desk","The everyday inbox worked by the agent team"],"/risk":["Risk feed","The disruption signals behind each decision"],"/approvals":["Approvals","Drafts and queued changes waiting for you"],"/agents":["Agents","The people-free operating layers behind the board"],"/tms":["TMS link","A transparent view of the demo connector queue"]};
+const pageCopy:Record<string,[string,string]>={"/ ":["Home","Ask the desk — every answer is checked against the board"],"/dashboard":["Today","What needs you now, and what is close to its limit"],"/connections":["Connections","Every source and destination connected to the desk"],"/map":["Map","Every booking monitored through the TMS link"],"/overview":["Board","Decisions across the active freight board"],"/shipments":["Shipments","Every booking, decision and approval gate"],"/desk":["Desk","The everyday inbox worked by the agent team"],"/risk":["Risk feed","The disruption signals behind each decision"],"/approvals":["Approvals","Drafts and queued changes waiting for you"],"/agents":["Agents","The people-free operating layers behind the board"],"/tms":["TMS link","A transparent view of the demo connector queue"]};
 export function AppShell({children}:{children:ReactNode}){
  const {run,workflow,recorded,loading,selectedScenario,setSelectedScenario,executeRun,approved,connection}=useApp();const navigate=useNavigate(); const path=useRouterState({select:s=>s.location.pathname});
  const [mobile,setMobile]=useState(false);const [palette,setPalette]=useState(false);const [query,setQuery]=useState("");const [chats,setChats]=useState<SavedChat[]>([]);const awaiting=waitingCount(run,workflow)-approved.size;
