@@ -12,3 +12,7 @@
 - [x] Dashboard insights page with recorded fallback
 - [x] Selected-scenario Ask and null last-run fixes
 - [x] Desktop and mobile preview verification
+- [x] Unify charts, cards, headers, tables, chips, and spacing across every page
+- [x] Add monitored Map page with recorded fallback and Board preview
+- [x] Show answer wording provenance and exact wording on Home
+- [x] Verify desktop, mobile, refresh, navigation, and build health
