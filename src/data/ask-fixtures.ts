@@ -1048,3 +1048,184 @@ export const recordedSampleConnection = {
  "unmapped_columns": [],
  "warnings": []
 };
+
+/** Recorded GET /api/insights?scenario=hamburg, for the Dashboard's offline fallback. */
+export const recordedInsights = {
+ "title": "Desk insights",
+ "subtitle": "This morning's inbox and the Hamburg port strike board",
+ "cards": [
+  {
+   "label": "Mails worked",
+   "value": "13",
+   "caption": "every inbound mail, triaged and routed"
+  },
+  {
+   "label": "Handled end to end",
+   "value": "62%",
+   "caption": "8 of 13 needed no person before approval"
+  },
+  {
+   "label": "Escalated to a person",
+   "value": "5",
+   "caption": "held rather than guessed"
+  },
+  {
+   "label": "Waiting for you",
+   "value": "36",
+   "caption": "drafts and TMS changes at the gate"
+  }
+ ],
+ "workload": {
+  "title": "Work by agent",
+  "subtitle": "Messages each agent posted on the desk's bus in this run",
+  "bars": [
+   {
+    "label": "Playbook",
+    "value": 28
+   },
+   {
+    "label": "Booking",
+    "value": 28
+   },
+   {
+    "label": "Inbox",
+    "value": 13
+   },
+   {
+    "label": "Routing",
+    "value": 8
+   },
+   {
+    "label": "Rate",
+    "value": 7
+   },
+   {
+    "label": "Docs",
+    "value": 7
+   },
+   {
+    "label": "Exception",
+    "value": 6
+   },
+   {
+    "label": "RFQ",
+    "value": 5
+   },
+   {
+    "label": "Milestones",
+    "value": 4
+   },
+   {
+    "label": "Invoice",
+    "value": 2
+   },
+   {
+    "label": "Customs",
+    "value": 1
+   }
+  ]
+ },
+ "mix": {
+  "title": "What the inbox asked for",
+  "subtitle": "Share of this morning's mails, by what the Inbox Worker read them as",
+  "rows": [
+   {
+    "label": "Booking request",
+    "count": 4,
+    "share": 31
+   },
+   {
+    "label": "Documents",
+    "count": 2,
+    "share": 15
+   },
+   {
+    "label": "Arrival notice",
+    "count": 2,
+    "share": 15
+   },
+   {
+    "label": "Rate request",
+    "count": 1,
+    "share": 8
+   },
+   {
+    "label": "Carrier notice",
+    "count": 1,
+    "share": 8
+   },
+   {
+    "label": "Status request",
+    "count": 1,
+    "share": 8
+   },
+   {
+    "label": "Carrier invoice",
+    "count": 1,
+    "share": 8
+   },
+   {
+    "label": "Milestone",
+    "count": 1,
+    "share": 7
+   }
+  ]
+ },
+ "approvals": {
+  "title": "Where your approvals come from",
+  "subtitle": "Items waiting at the gate, by the agent that produced them",
+  "rows": [
+   {
+    "label": "Booking Worker",
+    "count": 9,
+    "share": 25
+   },
+   {
+    "label": "Comms Worker",
+    "count": 6,
+    "share": 17
+   },
+   {
+    "label": "Exception Worker",
+    "count": 4,
+    "share": 11
+   },
+   {
+    "label": "Milestones Worker",
+    "count": 3,
+    "share": 8
+   },
+   {
+    "label": "Risk Worker",
+    "count": 3,
+    "share": 8
+   },
+   {
+    "label": "Routing Worker",
+    "count": 3,
+    "share": 8
+   },
+   {
+    "label": "RFQ Worker",
+    "count": 2,
+    "share": 6
+   },
+   {
+    "label": "Docs Worker",
+    "count": 2,
+    "share": 6
+   },
+   {
+    "label": "Invoice Worker",
+    "count": 2,
+    "share": 6
+   },
+   {
+    "label": "Customs Worker",
+    "count": 2,
+    "share": 5
+   }
+  ]
+ },
+ "note": "Counted from one run - the desk's synthetic inbox and the board as it stands. There is no history yet, so nothing here is a trend."
+};
