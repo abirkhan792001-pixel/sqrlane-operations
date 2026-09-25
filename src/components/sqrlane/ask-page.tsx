@@ -75,7 +75,7 @@ function ThreadEntry({ entry, onAsk }: { entry: Entry; onAsk: (q: string) => voi
       <p className="mt-4 break-words text-sm leading-6">{a.text}</p>
       {a.facts.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{a.facts.map((f, i) => <span key={i} className="rounded-md border border-border bg-muted px-2 py-1 text-xs"><span className="text-muted-foreground">{f.label}</span> <b className="font-mono font-medium">{String(f.value)}</b></span>)}</div>}
       {a.links.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{a.links.map((l, i) => <AnswerLink key={i} link={l} />)}</div>}
-      {!a.answered && a.suggestions.length > 0 && <ul className="mt-4 space-y-2 text-sm">{a.suggestions.map((s, i) => { const m = s.match(/["“]([^"”]+\?)["”]/); return <li key={i} className="flex flex-wrap items-center gap-2 text-muted-foreground"><span>{m ? s.replace(m[0], "").trim() : s}</span>{m && <button className="ask-chip" onClick={() => onAsk(m[1])}>{m[1]}</button>}</li>; })}</ul>}
+      {!a.answered && a.suggestions.length > 0 && <ul className="mt-4 space-y-2 text-sm">{a.suggestions.map((s, i) => { const m = s.match(/["“]([^"”]+\?)["”]/); return <li key={i} className="flex flex-wrap items-center gap-2 text-muted-foreground"><span>{m ? s.replace(m[0], "").trim() : s}</span>{m && <button className="ask-chip" onClick={() => onAsk(m[1] ?? "")}>{m[1]}</button>}</li>; })}</ul>}
       {a.conversation.length > 0 && <details className="mt-5 border-t border-border pt-4"><summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-medium text-muted-foreground"><ChevronDown className="size-3.5" />How the desk answered ({a.conversation.length} messages)</summary>
         <ol className="mt-3 space-y-2">{a.conversation.map(m => { const row = <li className="rounded-lg border border-border p-3"><div className="flex flex-wrap items-center gap-2 text-xs"><span className="flex size-5 items-center justify-center rounded-full bg-primary font-mono text-[9px] text-primary-foreground">{m.seq}</span><b>{m.from}</b><ArrowRight className="size-3 text-muted-foreground" /><span>{m.to}</span><Badge>{m.kind}</Badge></div><p className="mt-2 break-words text-xs leading-5 text-muted-foreground">{m.text}</p></li>; return m.why ? <Tooltip key={m.seq} content={m.why}>{row}</Tooltip> : <div key={m.seq}>{row}</div>; })}</ol></details>}
       {a.checked_against?.note && <p className="mt-4 text-xs text-muted-foreground">{a.checked_against.note}</p>}
@@ -86,10 +86,10 @@ function ThreadEntry({ entry, onAsk }: { entry: Entry; onAsk: (q: string) => voi
 function AnswerLink({ link }: { link: AskAnswer["links"][number] }) {
   const cls = "inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs font-medium hover:bg-muted";
   const inner = <>{link.label}<ArrowRight className="size-3" /></>;
-  const id = link.id ?? undefined;
+  const search = link.id ? { id: link.id } : {};
   switch (link.view) {
-    case "shipments": return <Link to="/shipments" search={{ id }} className={cls}>{inner}</Link>;
-    case "desk": return <Link to="/desk" search={{ id }} className={cls}>{inner}</Link>;
+    case "shipments": return <Link to="/shipments" search={search} className={cls}>{inner}</Link>;
+    case "desk": return <Link to="/desk" search={search} className={cls}>{inner}</Link>;
     case "approvals": return <Link to="/approvals" className={cls}>{inner}</Link>;
     case "risk": return <Link to="/risk" className={cls}>{inner}</Link>;
     case "tms": return <Link to="/tms" className={cls}>{inner}</Link>;
@@ -98,7 +98,7 @@ function AnswerLink({ link }: { link: AskAnswer["links"][number] }) {
 }
 
 function DeskToday() {
-  const { workflow, run } = useApp(); const s = workflow.stats as Record<string, number>;
+  const { workflow, run } = useApp(); const s = workflow.stats as unknown as { items?: number; routed?: number; playbook_fixes?: number; escalations?: number; mails?: number };
   const tmsQueued = workflow.outputs.filter(o => o.kind === "tms").length;
   const flow: Array<[string, number | undefined]> = [["Inbox", s.items], ["Workers", s.routed], ["Playbook check", s.playbook_fixes], ["Your approval", workflow.outputs.length], ["TMS", tmsQueued]];
   const stats: Array<[string, number | undefined]> = [["Mails in", s.items], ["Routed", s.routed], ["Escalated", s.escalations], ["Drafts", s.mails], ["TMS changes queued", tmsQueued], ["Playbook fixes", s.playbook_fixes]];
