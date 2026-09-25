@@ -10,7 +10,7 @@ export type CorrectionResult = { accepted: boolean; reason?: string; lesson: str
 
 export const recordedRunData = recordedRun["POST /run (after 'Inject Hamburg strike')"] as RunData;
 export const recordedWorkflowData = recordedRun["GET /api/workflow (the everyday desk)"] as WorkflowData;
-const baseUrl = import.meta.env.VITE_API_BASE ?? "";
+const baseUrl = import.meta.env["VITE_API_BASE"] ?? "";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, {
