@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { OverviewPage } from "@/components/sqrlane/operations-pages";
+import { AskPage } from "@/components/sqrlane/ask-page";
 
 export const Route = createFileRoute("/")({
+  validateSearch: (s: Record<string, unknown>): { q?: string | undefined } => ({ q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined }),
   head: () => ({ meta: [
-    { title: "Overview — SQRlane" },
-    { name: "description", content: "Freight decisions, disruptions and approvals across the active SQRlane board." },
-    { property: "og:title", content: "Overview — SQRlane" },
-    { property: "og:description", content: "Freight decisions, disruptions and approvals across the active SQRlane board." },
+    { title: "Ask SQRlane — the freight desk" },
+    { name: "description", content: "Ask the SQRlane desk about a booking, a port, a rate, an invoice, customs or what is waiting for you." },
+    { property: "og:title", content: "Ask SQRlane — the freight desk" },
+    { property: "og:description", content: "Ask the SQRlane desk about a booking, a port, a rate, an invoice, customs or what is waiting for you." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
   ]}),
-  component: OverviewPage,
+  component: AskPage,
 });

@@ -4,3 +4,6 @@
 - [x] Approvals, Agents, TMS link
 - [x] Loading, search, drawers, correction, local approvals
 - [x] Metadata and responsive preview verification
+- [x] Ask SQRlane home, automation-first navigation, Board moved to /overview
+- [x] Connect your TMS (export, API, write-back), saved connection, dynamic banner
+- [x] Approvals send one write-back at a time or export approved changes
