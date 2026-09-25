@@ -7,3 +7,8 @@
 - [x] Ask SQRlane home, automation-first navigation, Board moved to /overview
 - [x] Connect your TMS (export, API, write-back), saved connection, dynamic banner
 - [x] Approvals send one write-back at a time or export approved changes
+- [ ] Home chat with attachments and browser-saved recent chats
+- [ ] Connections page and moved MCP details
+- [ ] Dashboard insights page with recorded fallback
+- [ ] Selected-scenario Ask and null last-run fixes
+- [ ] Desktop and mobile preview verification
