@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TmsPage } from "@/components/sqrlane/system-pages";
+import { TmsPage } from "@/components/sqrlane/tms-pages";
 export const Route = createFileRoute("/tms")({
  head: () => ({ meta: [
   { title: "TMS link — SQRlane" }, { name: "description", content: "A transparent view of the SQRlane demo connector queue." },
