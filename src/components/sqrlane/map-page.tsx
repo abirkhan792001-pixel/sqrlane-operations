@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { RefreshCw } from "lucide-react";
 import { recordedMap } from "@/data/map-fixture";
 import { WORLD_COAST_PATH } from "@/data/world-coast";
-import { getMap, type MapData } from "@/lib/api";
+import { getMap, type MapData, type ScenarioId } from "@/lib/api";
 import { stateLabel, toneFor } from "@/lib/presentation";
 import { Badge, Button, Card } from "@/components/ui";
 import { useApp } from "./app-context";
@@ -13,7 +13,7 @@ type Lane = MapData["map"]["lanes"][number];
 
 export function MapPage() {
   const { run, selectedScenario, connection } = useApp();
-  const scenario = (run as unknown as { scenario?: { id?: string } | null }).scenario?.id ?? selectedScenario;
+  const scenario = (run as unknown as { scenario?: { id?: ScenarioId } | null }).scenario?.id ?? selectedScenario;
   const [data, setData] = useState<MapData>(recordedMap);
   const [recorded, setRecorded] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -66,3 +66,12 @@ export function MapCanvas({ data, compact = false, highlighted, onHighlight }: {
 }
 
 function laneTone(state: Lane["state"]) { return state === "hold" ? "amber" : state === "rerouted" ? "blue" : "green"; }
+
+export function BoardMap() {
+  const { run, selectedScenario, connection } = useApp();
+  const navigate = useNavigate();
+  const scenario = (run as unknown as { scenario?: { id?: ScenarioId } | null }).scenario?.id ?? selectedScenario;
+  const [data, setData] = useState<MapData>(recordedMap);
+  useEffect(() => { let live = true; getMap(scenario, connection).then(value => { if (live) setData(value); }).catch(() => { if (live) setData(recordedMap); }); return () => { live = false; }; }, [scenario, connection]);
+  return <Card className="p-5"><div className="flex items-start justify-between gap-3"><SectionHead title="Bookings in motion" caption={`${data.mapped} of ${data.bookings} bookings mapped`}/><Button variant="outline" onClick={() => void navigate({ to: "/map" })}>Open map</Button></div><MapCanvas data={data} compact/></Card>;
+}
