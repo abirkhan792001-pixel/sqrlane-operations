@@ -21,6 +21,6 @@ export function DashboardPage() {
   </div>;
 }
 
-function ShareChart({ section }: { section: InsightsData["mix"] }) {
+function ShareChart({ section }: { section: { title: string; subtitle: string; rows: ReadonlyArray<{ label: string; count: number; share: number }> } }) {
   return <Card className="min-w-0 p-5"><SectionHead title={section.title} caption={section.subtitle}/><div className="h-80"><ResponsiveContainer width="100%" height="100%"><BarChart data={section.rows} layout="vertical" margin={{ top: 4, right: 18, left: 12, bottom: 2 }}><CartesianGrid horizontal={false} stroke="var(--border)"/><XAxis type="number" domain={[0, 100]} tickFormatter={v => `${v}%`} tick={{fontSize:9,fill:"var(--muted-foreground)"}} axisLine={false} tickLine={false}/><YAxis type="category" dataKey="label" width={110} tick={{fontSize:10,fill:"var(--muted-foreground)"}} axisLine={false} tickLine={false}/><Tooltip formatter={(value) => [`${value}%`, "Share"]}/><Bar dataKey="share" fill="var(--foreground)" radius={[0,4,4,0]} barSize={22}/></BarChart></ResponsiveContainer></div></Card>;
 }

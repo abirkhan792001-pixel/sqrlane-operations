@@ -21,14 +21,15 @@ export function AskPage() {
   useEffect(() => { const found = search.chat ? loadChats().find(x => x.id === search.chat) : undefined; setChatId(search.chat ?? ""); setThread(found?.entries ?? []); setText(""); setFiles([]); initialized.current = true; requestAnimationFrame(() => inputRef.current?.focus()) }, [search.chat]);
   useEffect(() => { if (initialized.current && chatId && thread.length) saveChat({ id: chatId, title: chatTitle(thread), updatedAt: new Date().toISOString(), entries: thread }) }, [chatId, thread]);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }); if (!busy) inputRef.current?.focus() }, [thread, busy]);
-  useEffect(() => { if (search.q) { void ask(search.q, []); void navigate({ to: "/", search: (old: { chat?: string }) => ({ ...old, q: undefined }), replace: true }) } }, [search.q]);
+  useEffect(() => { if (search.q) { void ask(search.q, []); void navigate({ to: "/", search: search.chat ? { chat: search.chat } : {}, replace: true }) } }, [search.q]);
   function addFiles(list: FileList | File[]) { const next = Array.from(list); const tooBig = next.find(f => f.size > 1024 * 1024); if (tooBig) { setNotice(`${tooBig.name} is larger than 1 MB.`); return } const merged = [...files, ...next].slice(0,3); setFiles(merged); setNotice(files.length + next.length > 3 ? "Up to 3 files can be attached." : "") }
   async function prepare(selected: File[]): Promise<AskAttachment[]> { return Promise.all(selected.map(async file => ({ name: file.name, content: readable.has(file.name.split(".").pop()?.toLowerCase() ?? "") ? await file.text() : null }))) }
   async function submit() { const attachments = await prepare(files); await ask(text, attachments) }
   async function ask(question: string, attachments: AskAttachment[] = []) {
     const q = question.trim(); if ((!q && !attachments.length) || busy) return;
-    const id = newChatId(); const active = chatId || newChatId(); if (!chatId) { setChatId(active); void navigate({ to: "/", search: { chat: active }, replace: true }) }
-    setText(""); setFiles([]); setBusy(true); setThread(t => [...t, { id, question: q, attachments }]);
+    const id = newChatId(); const active = chatId || newChatId(); const pending = { id, question: q, attachments };
+    if (!chatId) { saveChat({ id: active, title: q || attachments[0]?.name || "New chat", updatedAt: new Date().toISOString(), entries: [pending] }); setChatId(active); void navigate({ to: "/", search: { chat: active }, replace: true }) }
+    setText(""); setFiles([]); setBusy(true); setThread(t => [...t, pending]);
     let entry: ChatEntry;
     try { const answer = await askDesk(q, (run as unknown as { scenario?: { id?: string } | null }).scenario?.id ?? selectedScenario, connection, attachments); if (answer.examples?.length) setExamples(answer.examples.slice(0,6)); entry = { id, question: q, attachments, answer } }
     catch { const rec = q ? findRecorded(q) : undefined; entry = rec ? { id, question: q, attachments, answer: rec, recorded: true } : { id, question: q, attachments, unreachable: true } }
@@ -46,7 +47,7 @@ function ExampleChips({examples,ask}:{examples:string[];ask:(q:string)=>void}) {
 
 function ThreadEntry({ entry, onAsk }: { entry: ChatEntry; onAsk: (q: string) => void }) {
   const a = entry.answer; const { applyConnection } = useApp(); const [preview, setPreview] = useState<ConnectResult | null>(a?.connection_preview ?? null); const [copied,setCopied]=useState(false);
-  async function usePreview() { if (!preview) return; const c: TmsConnection = { kind:"file", name:preview.name, source:preview.source, read_at:preview.read_at, bookings:preview.bookings, writeback_url:preview.writeback_url }; await applyConnection(c); setPreview(null) }
+  async function usePreview() { if (!preview) return; const c: TmsConnection = { kind:"file", name:preview.name, source:preview.source, read_at:preview.read_at, bookings:preview.bookings, ...(preview.writeback_url !== undefined ? { writeback_url: preview.writeback_url } : {}) }; await applyConnection(c); setPreview(null) }
   return <article className="space-y-4"><div className="flex justify-end"><div className="max-w-[85%] rounded-2xl rounded-br-md bg-muted px-4 py-3 text-sm"><p className="break-words">{entry.question}</p>{entry.attachments.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{entry.attachments.map((f,i)=><span key={`${f.name}-${i}`} className="attachment-chip"><Paperclip className="size-3"/>{f.name}</span>)}</div>}</div></div>
     {!a && !entry.unreachable && <div className="flex items-center gap-2"><Mark/><span className="typing-dot"/><span className="typing-dot"/><span className="typing-dot"/><span className="sr-only">The desk is answering</span></div>}
     {entry.unreachable && <div className="answer-row"><Mark/><div><p className="text-sm font-medium">The desk isn't reachable right now — nothing made up.</p><p className="mt-1 text-xs text-muted-foreground">These recorded questions still have answers:</p><div className="mt-3 flex flex-wrap gap-2">{recordedQuestions.map(q=><button key={q} onClick={()=>onAsk(q)} className="ask-chip">{q}</button>)}</div></div></div>}
