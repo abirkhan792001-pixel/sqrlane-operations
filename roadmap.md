@@ -1,4 +1,8 @@
 # Roadmap
+- [ ] Rebuild Today from the active run's `today` block
+- [ ] Add the interactive shipment board and shared runway axis
+- [ ] Align Board, Shipments, and Approvals visual surfaces
+- [ ] Verify all affected pages at desktop and 390px
 - [x] Rebuild Dashboard as Today command centre
 - [x] Turn Approvals into a filterable work queue
 - [x] Persist browser-only approval history and restore approved state
