@@ -1,10 +1,12 @@
 import { recordedRun } from "@/data/fixtures";
 import { recordedInsights, type recordedAnswers } from "@/data/ask-fixtures";
 import { recordedMap } from "@/data/map-fixture";
+import { recordedToday } from "@/data/today-fixture";
 
 export type RecordedFixture = typeof recordedRun;
 type RawRun = RecordedFixture["POST /run (after 'Inject Hamburg strike')"];
-export type RunData = Omit<RawRun, "ai" | "tms"> & { ai?: RawRun["ai"]; tms: Omit<RawRun["tms"], "writebacks"> & { writebacks: Writeback[] } };
+export type TodayData = typeof recordedToday & { ran_at?: string | null };
+export type RunData = Omit<RawRun, "ai" | "tms"> & { ai?: RawRun["ai"]; tms: Omit<RawRun["tms"], "writebacks"> & { writebacks: Writeback[] }; today: TodayData };
 type RawWorkflow = RecordedFixture["GET /api/workflow (the everyday desk)"];
 export type WorkflowMessage = RawWorkflow["messages_sample"][number];
 export type WorkflowOutput = RawWorkflow["outputs_sample"][number] & { queued_at?: string | null };
@@ -34,7 +36,7 @@ export function normalizeWorkflow(raw: any): WorkflowData {
 export function normalizeRun(raw: any): RunData {
   if (!raw || !Array.isArray(raw.shipments)) return raw;
   const shipments = raw.shipments.map((s: any) => ({ ...s, drafts: s.drafts ?? [], decision: s.decision ?? { ...calmDecision } }));
-  const out = { ...raw, shipments };
+  const out = { ...raw, shipments, today: raw.today ?? recordedToday };
   if (!raw.ai) delete out.ai;
   return out as RunData;
 }
