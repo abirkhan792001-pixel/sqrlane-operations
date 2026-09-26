@@ -1127,7 +1127,7 @@ export const recordedInsights = {
  },
  "mix": {
   "title": "What the inbox asked for",
-  "subtitle": "Share of this morning's mails, by what the Inbox Worker read them as",
+  "subtitle": "This morning's mails, by what the Inbox Worker read them as",
   "rows": [
    {
     "label": "Booking request",
@@ -1169,7 +1169,9 @@ export const recordedInsights = {
     "count": 1,
     "share": 7
    }
-  ]
+  ],
+  "total": 13,
+  "display": "counts - on a total this small a percentage overstates precision"
  },
  "approvals": {
   "title": "Where your approvals come from",
@@ -1224,6 +1226,242 @@ export const recordedInsights = {
     "label": "Customs Worker",
     "count": 2,
     "share": 5
+   }
+  ],
+  "total": 36
+ },
+ "decisions": {
+  "bookings": 12,
+  "items": 36,
+  "caption": "36 drafts and changes across 12 bookings"
+ },
+ "at_stake": {
+  "title": "At stake",
+  "subtitle": "If nothing is done, against the recommended action",
+  "rows": [
+   {
+    "id": "SHP-002",
+    "customer": "Nordmed Pharma Logistik AG",
+    "cargo": "Refrigerated pharma (reefer)",
+    "decision": "hold",
+    "headline": "No better option - hold and notify",
+    "stay_exposure_eur": 91000,
+    "action_exposure_eur": 91000,
+    "avoided_eur": 0,
+    "breaks_date": true,
+    "costs_basis": "from the booking's commercial terms"
+   },
+   {
+    "id": "SHP-001",
+    "customer": "Bavaria Drivetrain GmbH",
+    "cargo": "Automotive parts",
+    "decision": "reroute",
+    "headline": "Reroute via RTM - +2d, inside 4d slack",
+    "stay_exposure_eur": 31500,
+    "action_exposure_eur": 2304,
+    "avoided_eur": 29196,
+    "breaks_date": false,
+    "costs_basis": "from the booking's commercial terms"
+   },
+   {
+    "id": "SHP-005",
+    "customer": "Elbe Werkzeugbau GmbH",
+    "cargo": "Machinery",
+    "decision": "reroute",
+    "headline": "Reroute via RTM - +2d, inside 3d slack",
+    "stay_exposure_eur": 18600,
+    "action_exposure_eur": 1296,
+    "avoided_eur": 17304,
+    "breaks_date": false,
+    "costs_basis": "from the booking's commercial terms"
+   }
+  ],
+  "total_stay_eur": 141100,
+  "total_action_eur": 94600,
+  "total_avoided_eur": 46500,
+  "basis": "Computed from each booking's commercial terms - freight, the cost of a day late, the cost of missing the date - by the Routing agent. Not a forecast, and not a market figure."
+ },
+ "customers": {
+  "title": "Customers to notify",
+  "subtitle": "Each customer a decision affects; the mail is drafted, not sent",
+  "rows": [
+   {
+    "customer": "Nordmed Pharma Logistik AG",
+    "bookings": [
+     "SHP-002"
+    ],
+    "breaks_date": true,
+    "drafts": 1
+   },
+   {
+    "customer": "Bavaria Drivetrain GmbH",
+    "bookings": [
+     "SHP-001"
+    ],
+    "breaks_date": false,
+    "drafts": 1
+   },
+   {
+    "customer": "Elbe Werkzeugbau GmbH",
+    "bookings": [
+     "SHP-005"
+    ],
+    "breaks_date": false,
+    "drafts": 1
+   }
+  ]
+ },
+ "runway": {
+  "title": "Time runway",
+  "subtitle": "Slack against the worst delay if nothing is done, and where the decision leaves it - what still breaks its date on top",
+  "statuses": {
+   "breaks": "misses the required-by date even after the decision",
+   "resolved": "would have missed it; the decision keeps the date",
+   "close": "on plan, but close to the limit",
+   "clear": "time to spare"
+  },
+  "rows": [
+   {
+    "id": "SHP-002",
+    "cargo": "Refrigerated pharma (reefer)",
+    "customer": "Nordmed Pharma Logistik AG",
+    "state": "hold",
+    "decision": "hold",
+    "slack_days": 1,
+    "worst_delay_days": 5,
+    "margin_days": -4,
+    "delay_after_decision_days": 5,
+    "margin_after_decision_days": -4,
+    "severity": "high",
+    "status": "breaks"
+   },
+   {
+    "id": "SHP-005",
+    "cargo": "Machinery",
+    "customer": "Elbe Werkzeugbau GmbH",
+    "state": "rerouted",
+    "decision": "reroute",
+    "slack_days": 3,
+    "worst_delay_days": 5,
+    "margin_days": -2,
+    "delay_after_decision_days": 2,
+    "margin_after_decision_days": 1,
+    "severity": "high",
+    "status": "resolved"
+   },
+   {
+    "id": "SHP-001",
+    "cargo": "Automotive parts",
+    "customer": "Bavaria Drivetrain GmbH",
+    "state": "rerouted",
+    "decision": "reroute",
+    "slack_days": 4,
+    "worst_delay_days": 5,
+    "margin_days": -1,
+    "delay_after_decision_days": 2,
+    "margin_after_decision_days": 2,
+    "severity": "high",
+    "status": "resolved"
+   },
+   {
+    "id": "SHP-004",
+    "cargo": "Electronics",
+    "customer": "Kempen Electronics NV",
+    "state": "green",
+    "decision": "no-action",
+    "slack_days": 2,
+    "worst_delay_days": 0,
+    "margin_days": 2,
+    "delay_after_decision_days": 0,
+    "margin_after_decision_days": 2,
+    "severity": null,
+    "status": "clear"
+   },
+   {
+    "id": "SHP-003",
+    "cargo": "Furniture",
+    "customer": "Wonen Direct B.V.",
+    "state": "green",
+    "decision": "no-action",
+    "slack_days": 3,
+    "worst_delay_days": 0,
+    "margin_days": 3,
+    "delay_after_decision_days": 0,
+    "margin_after_decision_days": 3,
+    "severity": null,
+    "status": "clear"
+   },
+   {
+    "id": "SHP-006",
+    "cargo": "Industrial chemicals",
+    "customer": "Rheintal Spezialchemie AG",
+    "state": "green",
+    "decision": "no-action",
+    "slack_days": 3,
+    "worst_delay_days": 0,
+    "margin_days": 3,
+    "delay_after_decision_days": 0,
+    "margin_after_decision_days": 3,
+    "severity": null,
+    "status": "clear"
+   },
+   {
+    "id": "SHP-007",
+    "cargo": "Textiles",
+    "customer": "Maison Cardelle SAS",
+    "state": "green",
+    "decision": "no-action",
+    "slack_days": 5,
+    "worst_delay_days": 0,
+    "margin_days": 5,
+    "delay_after_decision_days": 0,
+    "margin_after_decision_days": 5,
+    "severity": null,
+    "status": "clear"
+   }
+  ]
+ },
+ "people_needed": {
+  "title": "Where a person was needed",
+  "subtitle": "Mails the desk held for a person rather than guess, by the agent that held them",
+  "rows": [
+   {
+    "worker": "Booking Worker",
+    "count": 3,
+    "examples": [
+     {
+      "item": "IN-102",
+      "text": "NEW-102 held: gross weight not found in the documents. Not guessed - asking the customer."
+     },
+     {
+      "item": "IN-104",
+      "text": "NEW-104 held: commodity, hs code, incoterm, packages, gross weight not found in the documents. Not guessed - asking the customer."
+     },
+     {
+      "item": "IN-109",
+      "text": "NEW-109 held: commodity, hs code, incoterm, packages, gross weight not found in the documents. Not guessed - asking the customer."
+     }
+    ]
+   },
+   {
+    "worker": "Customs Worker",
+    "count": 1,
+    "examples": [
+     {
+      "item": "IN-112",
+      "text": "SHP-006 lands at Rotterdam but is going to Basel (Switzerland): a transit out of the EU, not an import entry. Who declares it and under which guarantee is a person's call - nothing filed."
+     }
+    ]
+   },
+   {
+    "worker": "Exception Worker",
+    "count": 1,
+    "examples": [
+     {
+      "item": "IN-105",
+      "text": "SHP-003 now misses its required-by date by 4 days. Re-plan: the next routing decision is the Routing Worker's, and a person approves it."
+     }
+    ]
    }
   ]
  },
