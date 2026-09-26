@@ -15,7 +15,7 @@ export function RunwayCard({ section, compact = false }: { section: InsightsData
       <Hint title="After the decision" content={`${row.delay_after_decision_days}d`}><span className="absolute top-4 size-3 -translate-x-1/2 rounded-full border-2 border-state-blue bg-card" style={{ left: `${row.delay_after_decision_days / maximum * 100}%` }}/></Hint>
       <span className="absolute bottom-0 left-0 text-[9px] text-muted-foreground">0</span><span className="absolute bottom-0 right-0 text-[9px] text-muted-foreground">{maximum}d</span>
     </div>
-    <div className="flex min-w-14 flex-col items-end gap-1"><b className={`font-mono text-sm ${row.margin_after_decision_days < 0 ? "text-state-red" : ""}`}>{signedDays(row.margin_after_decision_days)}</b><Hint title="Status" content={section.statuses[row.status]}><span><Badge tone={statusTone(row.status)}>{row.status}</Badge></span></Hint></div>
+    <div className="flex min-w-14 flex-col items-end gap-1"><b className={`font-mono text-sm ${row.margin_after_decision_days < 0 ? "text-state-red" : ""}`}>{signedDays(row.margin_after_decision_days)}</b><Hint title="Status" content={section.statuses[row.status as keyof typeof section.statuses]}><span><Badge tone={statusTone(row.status)}>{row.status}</Badge></span></Hint></div>
   </Link>)}</div></Card>;
 }
 
