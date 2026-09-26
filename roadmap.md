@@ -9,3 +9,7 @@
 - [x] Add per-booking shipment timeline
 - [x] Complete keyboard, focus, touch, keyboard viewport, map sheet, and contrast fixes
 - [x] Verify every page at desktop and 390px
+- [ ] Restructure Today around changes, exposure, customers, decisions, and runway
+- [ ] Redesign Board around disruption impact and shared runway
+- [ ] Move operational analytics and people-needed evidence to Agents
+- [ ] Verify desktop and 390px layouts across changed pages
