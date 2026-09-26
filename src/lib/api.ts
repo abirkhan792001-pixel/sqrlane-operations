@@ -14,7 +14,10 @@ export type ScenarioId = RunData["scenarios"][number]["id"];
 export type WorkflowCorrection = { item: string; kind: "intent"; right: string; cue: string };
 export type CorrectionResult = { accepted: boolean; reason?: string | undefined; lesson: string; fixed_item: string; propagated: Array<{ item: string }>; run: unknown };
 export type WatchlistRow = { id: string; cargo: string; slack_days: number; worst_delay_days: number; margin_days: number; reason: string };
-export type InsightsData = Omit<typeof recordedInsights, "watchlist"> & { watchlist: { title: string; subtitle: string; rule: string; rows: WatchlistRow[] } };
+export type InsightsData = Omit<typeof recordedInsights, "watchlist" | "at_stake"> & {
+  watchlist: { title: string; subtitle: string; rule: string; rows: WatchlistRow[] };
+  at_stake: Omit<typeof recordedInsights.at_stake, "rows"> & { rows: Array<Omit<(typeof recordedInsights.at_stake.rows)[number], "stay_exposure_eur" | "action_exposure_eur" | "avoided_eur"> & { stay_exposure_eur: number | null; action_exposure_eur: number | null; avoided_eur: number | null }> };
+};
 export type MapData = typeof recordedMap;
 export type AskAttachment = { name: string; content: string | null };
 
